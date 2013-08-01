@@ -15,7 +15,11 @@ namespace Racing
 
         public enum CarMovement
         {
-            None, Forward, Backward, Left, Right
+            None = 0,
+            Forward = 1,
+            Backward = 2,
+            Left = 4,
+            Right = 8
         }
 
         public class DrawPrimitive
@@ -93,19 +97,19 @@ namespace Racing
                 }
             }
 
-            if (CurrentMovement == CarMovement.Left)
+            if ((CurrentMovement & CarMovement.Left) == CarMovement.Left)
             {
                 DrawCar(0); if (_carPosX > 2) _carPosX--; else CurrentMovement = CarMovement.None;
             }
-            else if (CurrentMovement == CarMovement.Right)
+            if ((CurrentMovement & CarMovement.Right) == CarMovement.Right)
             {
                 DrawCar(0); if (_carPosX < Width - 3) _carPosX++; else CurrentMovement = CarMovement.None;
             }
-            else if (CurrentMovement == CarMovement.Forward)
+            if ((CurrentMovement & CarMovement.Forward) == CarMovement.Forward)
             {
                 DrawCar(0); if (_carPosY > 1) _carPosY--; else CurrentMovement = CarMovement.None;
             }
-            else if (CurrentMovement == CarMovement.Backward)
+            if ((CurrentMovement & CarMovement.Backward) == CarMovement.Backward)
             {
                 DrawCar(0); if (_carPosY < Height - 5) _carPosY++; else CurrentMovement = CarMovement.None;
             }
@@ -144,26 +148,26 @@ namespace Racing
 
         public void CarMoveLeft(Boolean pressed)
         {
-            if (pressed) CurrentMovement = CarMovement.Left;
-            else CurrentMovement = CarMovement.None;
+            if (pressed) CurrentMovement |= CarMovement.Left;
+            else CurrentMovement ^= CarMovement.Left;
         }
 
         public void CarMoveRight(Boolean pressed)
         {
-            if (pressed) CurrentMovement = CarMovement.Right;
-            else CurrentMovement = CarMovement.None;
+            if (pressed) CurrentMovement |= CarMovement.Right;
+            else CurrentMovement ^= CarMovement.Right;
         }
 
         public void CarMoveForward(Boolean pressed)
         {
-            if (pressed) CurrentMovement = CarMovement.Forward;
-            else CurrentMovement = CarMovement.None;
+            if (pressed) CurrentMovement |= CarMovement.Forward;
+            else CurrentMovement ^= CarMovement.Forward;
         }
 
         public void CarMoveBackward(Boolean pressed)
         {
-            if (pressed) CurrentMovement = CarMovement.Backward;
-            else CurrentMovement = CarMovement.None;
+            if (pressed) CurrentMovement |= CarMovement.Backward;
+            else CurrentMovement ^= CarMovement.Backward;
         }
     }
 }
