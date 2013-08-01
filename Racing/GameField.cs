@@ -8,23 +8,57 @@ namespace Racing
 {
     class GameField
     {
+        public enum PrimitiveType
+        {
+            NotSet, Empty, CarPart, Wall
+        }
+
+        public enum CarMovement
+        {
+            None, Forward, Backward, Left, Right
+        }
+
+        public class DrawPrimitive
+        {
+            public int PosX { get; private set; }
+            public int PosY { get; private set; }
+            public PrimitiveType DrawPrimitiveType { get; private set; }
+
+            public DrawPrimitive(int pPosX, int pPosY, PrimitiveType pDrawPrimitiveType)
+            {
+                PosX = pPosX; PosY = pPosY; DrawPrimitiveType = pDrawPrimitiveType;
+            }
+        }
+
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        private int[,] _mainFiled;
-        private int[,] _shadowField;
+        private PrimitiveType[,] _mainField;
+        private PrimitiveType[,] _shadowField;
 
         private Random _rnd;
-        
+
         int _carPosX, _carPosY;
+
+        private List<DrawPrimitive> _drawPrimitiveQueue = new List<DrawPrimitive>();
+
+        private CarMovement CurrentMovement = CarMovement.None;
 
         public GameField(int pWidth, int pHeight)
         {
             Width = pWidth;
             Height = pHeight;
 
-            _mainFiled = new int[Width, Height];
-            _shadowField = new int[Width, Height];
+            _mainField = new PrimitiveType[Width, Height];
+            _shadowField = new PrimitiveType[Width, Height];
+
+            for (int x = 1; x < Width - 1; x++)
+            {
+                for (int y = 1; y < Height - 1; y++)
+                {
+                    SetValue(x, y, PrimitiveType.Empty);
+                }
+            }
 
             _carPosX = Width / 2;
             _carPosY = Height / 2;
@@ -35,18 +69,18 @@ namespace Racing
         int _numOfTicks = 0;
         public void Tick()
         {
-            if (_numOfTicks % 100 == 0)
-            {
-                _shadowField[_rnd.Next(Width - 2) + 1, 1] = 1;
-            }
-
             if (_numOfTicks % 10 == 0)
             {
+                _shadowField[_rnd.Next(Width - 2) + 1, 1] = PrimitiveType.Wall;
+            }
+
+            if (_numOfTicks % 1 == 0)
+            {
                 for (int x = 1; x < Width - 1; x++)
                 {
                     for (int y = 1; y < Height - 1; y++)
                     {
-                        if (_shadowField[x, y] != 2) _mainFiled[x, y + 1] = _shadowField[x, y];
+                        SetValue(x, y + 1, _shadowField[x, y]);
                     }
                 }
 
@@ -54,56 +88,82 @@ namespace Racing
                 {
                     for (int y = 1; y < Height - 1; y++)
                     {
-                        _shadowField[x, y] = _mainFiled[x, y];
+                        _shadowField[x, y] = _mainField[x, y];
                     }
                 }
             }
 
-            DrawCar(2);
+            if (CurrentMovement == CarMovement.Left)
+            {
+                DrawCar(0); if (_carPosX > 2) _carPosX--; else CurrentMovement = CarMovement.None;
+            }
+            else if (CurrentMovement == CarMovement.Right)
+            {
+                DrawCar(0); if (_carPosX < Width - 3) _carPosX++; else CurrentMovement = CarMovement.None;
+            }
+            else if (CurrentMovement == CarMovement.Forward)
+            {
+                DrawCar(0); if (_carPosY > 1) _carPosY--; else CurrentMovement = CarMovement.None;
+            }
+            else if (CurrentMovement == CarMovement.Backward)
+            {
+                DrawCar(0); if (_carPosY < Height - 5) _carPosY++; else CurrentMovement = CarMovement.None;
+            }
+
+            DrawCar(PrimitiveType.CarPart);
 
             _numOfTicks++;
             if (_numOfTicks == int.MaxValue) _numOfTicks = 0;
         }
 
-        void DrawCar(int val)
+        void DrawCar(PrimitiveType val)
         {
-            _mainFiled[_carPosX, _carPosY] = val;
-            _mainFiled[_carPosX, _carPosY + 1] = val;
-            _mainFiled[_carPosX - 1, _carPosY + 1] = val;
-            _mainFiled[_carPosX + 1, _carPosY + 1] = val;
-            _mainFiled[_carPosX, _carPosY + 2] = val;
-            _mainFiled[_carPosX, _carPosY + 3] = val;
-            _mainFiled[_carPosX - 1, _carPosY + 3] = val;
-            _mainFiled[_carPosX + 1, _carPosY + 3] = val;
+            SetValue(_carPosX, _carPosY, val);
+            SetValue(_carPosX, _carPosY + 1, val);
+            SetValue(_carPosX - 1, _carPosY + 1, val);
+            SetValue(_carPosX + 1, _carPosY + 1, val);
+            SetValue(_carPosX, _carPosY + 2, val);
+            SetValue(_carPosX, _carPosY + 3, val);
+            SetValue(_carPosX - 1, _carPosY + 3, val);
+            SetValue(_carPosX + 1, _carPosY + 3, val);
         }
 
-        public int GetValue(int x, int y)
+        private void SetValue(int x, int y, PrimitiveType primitiveType)
         {
-            return _mainFiled[x, y];
+            if (_mainField[x, y] != primitiveType)
+                _drawPrimitiveQueue.Add(new DrawPrimitive(x, y, primitiveType));
+            _mainField[x, y] = primitiveType;
         }
 
-        public void CarMoveLeft()
+        public DrawPrimitive[] GetPrimitivesToDraw()
         {
-            DrawCar(0);
-            if (_carPosX > 2) _carPosX--;
+            DrawPrimitive[] primitives = _drawPrimitiveQueue.ToArray();
+            _drawPrimitiveQueue.Clear();
+            return primitives;
         }
 
-        public void CarMoveRight()
+        public void CarMoveLeft(Boolean pressed)
         {
-            DrawCar(0);
-            if (_carPosX < Width - 3) _carPosX++;
+            if (pressed) CurrentMovement = CarMovement.Left;
+            else CurrentMovement = CarMovement.None;
         }
 
-        public void CarMoveForward()
+        public void CarMoveRight(Boolean pressed)
         {
-            DrawCar(0);
-            if (_carPosY > 1) _carPosY--;
+            if (pressed) CurrentMovement = CarMovement.Right;
+            else CurrentMovement = CarMovement.None;
         }
 
-        public void CarMoveBackward()
+        public void CarMoveForward(Boolean pressed)
         {
-            DrawCar(0);
-            if (_carPosY < Height - 5) _carPosY++;
+            if (pressed) CurrentMovement = CarMovement.Forward;
+            else CurrentMovement = CarMovement.None;
+        }
+
+        public void CarMoveBackward(Boolean pressed)
+        {
+            if (pressed) CurrentMovement = CarMovement.Backward;
+            else CurrentMovement = CarMovement.None;
         }
     }
 }

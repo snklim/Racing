@@ -14,6 +14,7 @@ namespace Racing
     {
         private Timer m_MainTimer;
         private GameField m_GameField;
+        private Bitmap m_ShadowCanvas;
 
         public Form1()
         {
@@ -32,7 +33,7 @@ namespace Racing
         void m_MainTimer_Tick(object sender, EventArgs e)
         {
             m_GameField.Tick();
-            pictureBox1.Refresh();
+            DrawGameField(Graphics.FromImage(m_ShadowCanvas));
         }
 
         int m_CellSize, m_DeltaX, m_DeltaY, m_CanvasWidth, m_CanvasHeight;
@@ -46,45 +47,57 @@ namespace Racing
 
             m_DeltaX = (m_CanvasWidth - m_CellSize * m_GameField.Width) / 2;
             m_DeltaY = (m_CanvasHeight - m_CellSize * m_GameField.Height) / 2;
+
+            m_ShadowCanvas = new Bitmap(pictureBox1.Width, pictureBox1.Height);
         }
 
         void DrawGameField(Graphics g)
         {
-            g.Clear(Color.Gray);
+            GameField.DrawPrimitive[] primitives = m_GameField.GetPrimitivesToDraw();
 
-            for (int x = 1; x < m_GameField.Width - 1; x++)
+            foreach (GameField.DrawPrimitive p in primitives)
             {
-                for (int y = 1; y < m_GameField.Height - 1; y++)
-                {
-                    if (m_GameField.GetValue(x, y) == 0)
-                        g.DrawRectangle(new Pen(Color.Silver), m_DeltaX + x * m_CellSize, m_DeltaY + y * m_CellSize, m_CellSize, m_CellSize);
-                    else if (m_GameField.GetValue(x, y) == 1)
-                        g.FillRectangle(new SolidBrush(Color.Red), m_DeltaX + x * m_CellSize, m_DeltaY + y * m_CellSize, m_CellSize, m_CellSize);
-                    else if (m_GameField.GetValue(x, y) == 2)
-                        g.FillRectangle(new SolidBrush(Color.Orange), m_DeltaX + x * m_CellSize, m_DeltaY + y * m_CellSize, m_CellSize, m_CellSize);
-                }
+                g.FillRectangle(new SolidBrush(Color.Gray), m_DeltaX + p.PosX * m_CellSize, m_DeltaY + p.PosY * m_CellSize, m_CellSize, m_CellSize);
+                g.DrawRectangle(new Pen(Color.Silver), m_DeltaX + p.PosX * m_CellSize, m_DeltaY + p.PosY * m_CellSize, m_CellSize, m_CellSize);
+
+                if (p.DrawPrimitiveType == GameField.PrimitiveType.Wall)
+                    g.FillRectangle(new SolidBrush(Color.Red), m_DeltaX + p.PosX * m_CellSize, m_DeltaY + p.PosY * m_CellSize, m_CellSize, m_CellSize);
+                else if (p.DrawPrimitiveType == GameField.PrimitiveType.CarPart)
+                    g.FillRectangle(new SolidBrush(Color.Orange), m_DeltaX + p.PosX * m_CellSize, m_DeltaY + p.PosY * m_CellSize, m_CellSize, m_CellSize);
             }
+
+            if (primitives.Length > 0) pictureBox1.Refresh();
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            DrawGameField(e.Graphics);
+            e.Graphics.DrawImage(m_ShadowCanvas, 0, 0, m_ShadowCanvas.Width, m_ShadowCanvas.Height);
         }
 
         private void pictureBox1_Resize(object sender, EventArgs e)
         {
             InitGameFieldEnviroment();
-            pictureBox1.Refresh();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyValue)
             {
-                case 37: m_GameField.CarMoveLeft(); break;
-                case 38: m_GameField.CarMoveForward(); break;
-                case 39: m_GameField.CarMoveRight(); break;
-                case 40: m_GameField.CarMoveBackward(); break;
+                case 37: m_GameField.CarMoveLeft(true); break;
+                case 38: m_GameField.CarMoveForward(true); break;
+                case 39: m_GameField.CarMoveRight(true); break;
+                case 40: m_GameField.CarMoveBackward(true); break;
+            }
+        }
+
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyValue)
+            {
+                case 37: m_GameField.CarMoveLeft(false); break;
+                case 38: m_GameField.CarMoveForward(false); break;
+                case 39: m_GameField.CarMoveRight(false); break;
+                case 40: m_GameField.CarMoveBackward(false); break;
             }
         }
     }
