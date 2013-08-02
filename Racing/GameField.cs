@@ -31,9 +31,11 @@ namespace Racing
         {
             public int PosX { get; set; }
             public int PosY { get; set; }
-            public Cell(int pPosX, int pPosY){
-                PosX = pPosX; 
-                PosY=pPosY;}
+            public Cell(int pPosX, int pPosY)
+            {
+                PosX = pPosX;
+                PosY = pPosY;
+            }
         }
 
         public class DrawPrimitive
@@ -209,7 +211,7 @@ namespace Racing
                     new int[]{0,0,1},
                     new int[]{0,0,1},
                     new int[]{0,1,0},
-                    new int[]{0,1,0,0}
+                    new int[]{0,1,0}
                 }
             },
             {'8',
