@@ -62,10 +62,10 @@ namespace Racing
         private CarMovement CurrentMovement = CarMovement.None;
         public GameState CurrentGameState { get; private set; }
 
-        public GameField(int pWidth, int pHeight)
+        public GameField()
         {
-            Width = pWidth;
-            Height = pHeight;
+            Width = 35;
+            Height = 60;
 
             StartNewGame();
 
@@ -98,16 +98,169 @@ namespace Racing
         int _numOfPeaceOfWall = 5;
         int _numOfMovesLeftToWin = 0;
         int _numOfTextLeftToPrint = 5;
-        int _gameLavel = 0;
+        int _gameLavel = 8;
 
-        List<int[]> _levelTxt = new List<int[]>
+        Dictionary<char, List<int[]>> _letters = new Dictionary<char, List<int[]>>()
         {
-            new int[]{1,0,0,0,1,1,1,0,1,0,0,0,1,0,1,1,1,0,1,0,0,0,0,0,0,0,1},
-            new int[]{1,0,0,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,0,0,0,1,1},
-            new int[]{1,0,0,0,1,1,0,0,0,1,0,1,0,0,1,1,0,0,1,0,0,0,0,0,0,0,1},
-            new int[]{1,0,0,0,1,0,0,0,0,1,0,1,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1},
-            new int[]{1,1,1,0,1,1,1,0,0,0,1,0,0,0,1,1,1,0,1,1,1,0,0,0,0,0,1}
+            {'L', 
+                new List<int[]>
+                {
+                    new int[]{1,0,0},
+                    new int[]{1,0,0},
+                    new int[]{1,0,0},
+                    new int[]{1,0,0},
+                    new int[]{1,1,1}
+                }
+            },
+            {'E', 
+                new List<int[]>
+                {
+                    new int[]{1,1,1},
+                    new int[]{1,0,0},
+                    new int[]{1,1,0},
+                    new int[]{1,0,0},
+                    new int[]{1,1,1}
+                }
+            },
+            {'V',
+                new List<int[]>
+                {
+                    new int[]{1,0,0,0,1},
+                    new int[]{1,0,0,0,1},
+                    new int[]{0,1,0,1,0},
+                    new int[]{0,1,0,1,0},
+                    new int[]{0,0,1,0,0}
+                }
+            },
+            {' ',
+                new List<int[]>
+                {
+                    new int[]{0,0,0},
+                    new int[]{0,0,0},
+                    new int[]{0,0,0},
+                    new int[]{0,0,0},
+                    new int[]{0,0,0}
+                }
+            },
+            {'1',
+                new List<int[]>
+                {
+                    new int[]{0,0,0,1},
+                    new int[]{0,0,1,1},
+                    new int[]{0,0,0,1},
+                    new int[]{0,0,0,1},
+                    new int[]{0,0,0,1}
+                }
+            },
+            {'2',
+                new List<int[]>
+                {
+                    new int[]{0,1,1,1},
+                    new int[]{0,1,0,1},
+                    new int[]{0,0,0,1},
+                    new int[]{0,0,1,0},
+                    new int[]{0,1,1,1}
+                }
+            },
+            {'3',
+                new List<int[]>
+                {
+                    new int[]{0,1,1,1},
+                    new int[]{0,0,0,1},
+                    new int[]{0,0,1,0},
+                    new int[]{0,0,0,1},
+                    new int[]{0,1,1,1}
+                }
+            },
+            {'4',
+                new List<int[]>
+                {
+                    new int[]{0,1,0,1},
+                    new int[]{0,1,0,1},
+                    new int[]{0,1,1,1},
+                    new int[]{0,0,0,1},
+                    new int[]{0,0,0,1}
+                }
+            },
+            {'5',
+                new List<int[]>
+                {
+                    new int[]{0,1,1,1},
+                    new int[]{0,1,0,0},
+                    new int[]{0,1,1,1},
+                    new int[]{0,0,0,1},
+                    new int[]{0,1,1,1}
+                }
+            },
+            {'6',
+                new List<int[]>
+                {
+                    new int[]{0,0,0,1},
+                    new int[]{0,0,1,0},
+                    new int[]{0,1,1,1},
+                    new int[]{0,1,0,1},
+                    new int[]{0,1,1,1}
+                }
+            },
+            {'7',
+                new List<int[]>
+                {
+                    new int[]{0,1,1,1},
+                    new int[]{0,0,0,1},
+                    new int[]{0,0,0,1},
+                    new int[]{0,0,1,0},
+                    new int[]{0,1,0,0}
+                }
+            },
+            {'8',
+                new List<int[]>
+                {
+                    new int[]{0,1,1,1},
+                    new int[]{0,1,0,1},
+                    new int[]{0,1,1,1},
+                    new int[]{0,1,0,1},
+                    new int[]{0,1,1,1}
+                }
+            },
+            {'9',
+                new List<int[]>
+                {
+                    new int[]{0,1,1,1},
+                    new int[]{0,1,0,1},
+                    new int[]{0,1,1,1},
+                    new int[]{0,0,1,0},
+                    new int[]{0,1,0,0}
+                }
+            },
+            {'0',
+                new List<int[]>
+                {
+                    new int[]{0,1,1,1},
+                    new int[]{0,1,0,1},
+                    new int[]{0,1,0,1},
+                    new int[]{0,1,0,1},
+                    new int[]{0,1,1,1}
+                }
+            }
         };
+        void PrintText(string txt)
+        {
+            char[] chars = txt.ToArray();
+            int delta = 0;
+            for (int l = 0; l < chars.Length; l++)
+            {
+                if (!_letters.ContainsKey(chars[l])) continue;
+
+                for (int i = 0; i < _letters[chars[l]][_numOfTextLeftToPrint - 1].Length; i++)
+                {
+                    if (_letters[chars[l]][_numOfTextLeftToPrint - 1][i] == 1)
+                        _shadowField[i + delta, 0] = PrimitiveType.Text;
+                }
+
+                delta += _letters[chars[l]][_numOfTextLeftToPrint - 1].Length + 1;
+            }
+        }
+
         public void Tick()
         {
             if (CurrentGameState != GameState.Play) return;
@@ -123,12 +276,7 @@ namespace Racing
             {
                 if (_numOfTextLeftToPrint > 0)
                 {
-                    //foreach (int txtPos in _levelTxt[_numOfTextLeftToPrint - 1])
-                    for (int i = 0; i < _levelTxt[_numOfTextLeftToPrint - 1].Length; i++)
-                    {
-                        if (_levelTxt[_numOfTextLeftToPrint - 1][i] == 1)
-                            _shadowField[i, 0] = PrimitiveType.Text;
-                    }
+                    PrintText("LEVEL " + (_gameLavel + 1).ToString());
                         
                     _numOfTextLeftToPrint--;
                 }
@@ -180,6 +328,8 @@ namespace Racing
                 }
             }
 
+            DrawCar(PrimitiveType.CarPart);
+
             int newCarPosX, newCarPosY;
             newCarPosX = _carPosX; newCarPosY = _carPosY;
 
@@ -224,9 +374,11 @@ namespace Racing
 
         void NextLevel()
         {
-            _gameLavel++;
-            if (_gameLavel < 10)
+            if (_gameLavel < 9)
+            {
+                _gameLavel++;
                 StartNewGame();
+            }
             else
                 CurrentGameState = GameState.GameCompleted;
         }

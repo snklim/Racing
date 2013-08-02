@@ -18,7 +18,7 @@ namespace Racing
 
         public Form1()
         {
-            m_GameField = new GameField(30, 60);
+            m_GameField = new GameField();
             
             InitializeComponent();
 
