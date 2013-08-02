@@ -449,5 +449,12 @@ namespace Racing
         {
             StartNewGame();
         }
+
+        public void Resize()
+        {
+            for(int x=0; x<Width; x++)
+                for(int y=0; y<Height;y++)
+                    _drawPrimitiveQueue.Add(new DrawPrimitive(x, y, _mainField[x, y])); ;
+        }
     }
 }

@@ -79,6 +79,7 @@ namespace Racing
         private void pictureBox1_Resize(object sender, EventArgs e)
         {
             InitGameFieldEnviroment();
+            m_GameField.Resize();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
