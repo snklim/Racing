@@ -64,7 +64,7 @@ namespace Racing
 
         public GameField()
         {
-            Width = 35;
+            Width = 32;
             Height = 60;
 
             StartNewGame();
@@ -79,7 +79,7 @@ namespace Racing
         {
             CurrentGameState = GameState.Play;
 
-            _numOfPeaceOfWall = 5;
+            _numOfPeaceOfWall = 50;
             _numOfTextLeftToPrint = 5;
 
             _mainField = new PrimitiveType[Width, Height];
@@ -95,10 +95,10 @@ namespace Racing
         }
 
         int _numOfTicks = 0;
-        int _numOfPeaceOfWall = 5;
+        int _numOfPeaceOfWall = 125;
         int _numOfMovesLeftToWin = 0;
         int _numOfTextLeftToPrint = 5;
-        int _gameLavel = 8;
+        int _gameLavel = 4;
 
         Dictionary<char, List<int[]>> _letters = new Dictionary<char, List<int[]>>()
         {
@@ -135,111 +135,111 @@ namespace Racing
             {' ',
                 new List<int[]>
                 {
-                    new int[]{0,0,0},
-                    new int[]{0,0,0},
-                    new int[]{0,0,0},
-                    new int[]{0,0,0},
-                    new int[]{0,0,0}
+                    new int[]{0,0},
+                    new int[]{0,0},
+                    new int[]{0,0},
+                    new int[]{0,0},
+                    new int[]{0,0}
                 }
             },
             {'1',
                 new List<int[]>
                 {
-                    new int[]{0,0,0,1},
-                    new int[]{0,0,1,1},
-                    new int[]{0,0,0,1},
-                    new int[]{0,0,0,1},
-                    new int[]{0,0,0,1}
+                    new int[]{0,0,1},
+                    new int[]{0,1,1},
+                    new int[]{0,0,1},
+                    new int[]{0,0,1},
+                    new int[]{0,0,1}
                 }
             },
             {'2',
                 new List<int[]>
                 {
-                    new int[]{0,1,1,1},
-                    new int[]{0,1,0,1},
-                    new int[]{0,0,0,1},
-                    new int[]{0,0,1,0},
-                    new int[]{0,1,1,1}
+                    new int[]{1,1,1},
+                    new int[]{1,0,1},
+                    new int[]{0,0,1},
+                    new int[]{0,1,0},
+                    new int[]{1,1,1}
                 }
             },
             {'3',
                 new List<int[]>
                 {
-                    new int[]{0,1,1,1},
-                    new int[]{0,0,0,1},
-                    new int[]{0,0,1,0},
-                    new int[]{0,0,0,1},
-                    new int[]{0,1,1,1}
+                    new int[]{1,1,1},
+                    new int[]{0,0,1},
+                    new int[]{0,1,0},
+                    new int[]{0,0,1},
+                    new int[]{1,1,1}
                 }
             },
             {'4',
                 new List<int[]>
                 {
-                    new int[]{0,1,0,1},
-                    new int[]{0,1,0,1},
-                    new int[]{0,1,1,1},
-                    new int[]{0,0,0,1},
-                    new int[]{0,0,0,1}
+                    new int[]{1,0,1},
+                    new int[]{1,0,1},
+                    new int[]{1,1,1},
+                    new int[]{0,0,1},
+                    new int[]{0,0,1}
                 }
             },
             {'5',
                 new List<int[]>
                 {
-                    new int[]{0,1,1,1},
-                    new int[]{0,1,0,0},
-                    new int[]{0,1,1,1},
-                    new int[]{0,0,0,1},
-                    new int[]{0,1,1,1}
+                    new int[]{1,1,1},
+                    new int[]{1,0,0},
+                    new int[]{1,1,1},
+                    new int[]{0,0,1},
+                    new int[]{1,1,1}
                 }
             },
             {'6',
                 new List<int[]>
                 {
-                    new int[]{0,0,0,1},
-                    new int[]{0,0,1,0},
-                    new int[]{0,1,1,1},
-                    new int[]{0,1,0,1},
-                    new int[]{0,1,1,1}
+                    new int[]{1,1,1},
+                    new int[]{1,0,0},
+                    new int[]{1,1,1},
+                    new int[]{1,0,1},
+                    new int[]{1,1,1}
                 }
             },
             {'7',
                 new List<int[]>
                 {
-                    new int[]{0,1,1,1},
-                    new int[]{0,0,0,1},
-                    new int[]{0,0,0,1},
-                    new int[]{0,0,1,0},
+                    new int[]{1,1,1},
+                    new int[]{0,0,1},
+                    new int[]{0,0,1},
+                    new int[]{0,1,0},
                     new int[]{0,1,0,0}
                 }
             },
             {'8',
                 new List<int[]>
                 {
-                    new int[]{0,1,1,1},
-                    new int[]{0,1,0,1},
-                    new int[]{0,1,1,1},
-                    new int[]{0,1,0,1},
-                    new int[]{0,1,1,1}
+                    new int[]{1,1,1},
+                    new int[]{1,0,1},
+                    new int[]{1,1,1},
+                    new int[]{1,0,1},
+                    new int[]{1,1,1}
                 }
             },
             {'9',
                 new List<int[]>
                 {
-                    new int[]{0,1,1,1},
-                    new int[]{0,1,0,1},
-                    new int[]{0,1,1,1},
-                    new int[]{0,0,1,0},
-                    new int[]{0,1,0,0}
+                    new int[]{1,1,1},
+                    new int[]{1,0,1},
+                    new int[]{1,1,1},
+                    new int[]{0,0,1},
+                    new int[]{1,1,1}
                 }
             },
             {'0',
                 new List<int[]>
                 {
-                    new int[]{0,1,1,1},
-                    new int[]{0,1,0,1},
-                    new int[]{0,1,0,1},
-                    new int[]{0,1,0,1},
-                    new int[]{0,1,1,1}
+                    new int[]{1,1,1},
+                    new int[]{1,0,1},
+                    new int[]{1,0,1},
+                    new int[]{1,0,1},
+                    new int[]{1,1,1}
                 }
             }
         };
