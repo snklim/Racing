@@ -62,6 +62,8 @@ namespace Racing
 
                 if (p.DrawPrimitiveType == GameField.PrimitiveType.Wall)
                     g.FillRectangle(new SolidBrush(Color.Red), m_DeltaX + p.PosX * m_CellSize, m_DeltaY + p.PosY * m_CellSize, m_CellSize, m_CellSize);
+                if (p.DrawPrimitiveType == GameField.PrimitiveType.Text)
+                    g.FillRectangle(new SolidBrush(Color.White), m_DeltaX + p.PosX * m_CellSize, m_DeltaY + p.PosY * m_CellSize, m_CellSize, m_CellSize);
                 else if (p.DrawPrimitiveType == GameField.PrimitiveType.CarPart)
                     g.FillRectangle(new SolidBrush(Color.Orange), m_DeltaX + p.PosX * m_CellSize, m_DeltaY + p.PosY * m_CellSize, m_CellSize, m_CellSize);
             }
@@ -98,6 +100,7 @@ namespace Racing
                 case 38: m_GameField.CarMoveForward(false); break;
                 case 39: m_GameField.CarMoveRight(false); break;
                 case 40: m_GameField.CarMoveBackward(false); break;
+                case 78: m_GameField.NewGame(); break;
             }
         }
     }
